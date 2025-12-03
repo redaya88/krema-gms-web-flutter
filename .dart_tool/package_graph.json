@@ -45,6 +45,14 @@
       ]
     },
     {
+      "name": "animated_text_kit",
+      "version": "4.3.0",
+      "dependencies": [
+        "characters",
+        "flutter"
+      ]
+    },
+    {
       "name": "get_storage",
       "version": "2.1.1",
       "dependencies": [
@@ -178,6 +186,11 @@
       ]
     },
     {
+      "name": "characters",
+      "version": "1.4.0",
+      "dependencies": []
+    },
+    {
       "name": "path_provider",
       "version": "2.1.5",
       "dependencies": [
@@ -223,11 +236,6 @@
       "dependencies": [
         "collection"
       ]
-    },
-    {
-      "name": "characters",
-      "version": "1.4.0",
-      "dependencies": []
     },
     {
       "name": "leak_tracker_testing",
@@ -359,14 +367,6 @@
       "dependencies": [
         "meta",
         "path"
-      ]
-    },
-    {
-      "name": "animated_text_kit",
-      "version": "4.3.0",
-      "dependencies": [
-        "characters",
-        "flutter"
       ]
     }
   ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 class SlideContent extends StatefulWidget {
   final String image;
@@ -75,35 +74,30 @@ class _SlideContentState extends State<SlideContent>
                   ),
                 ),
                 const SizedBox(height: 30),
-                AnimatedTextKit(
-                  isRepeatingAnimation: false,
-                  animatedTexts: [
-                    TyperAnimatedText(
-                      widget.title,
-                      textStyle: TextStyle(
-                        fontSize: isSmall ? 26 : 34,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF4A155A),
-                      ),
-                      speed: const Duration(milliseconds: 80),
-                    ),
-                  ],
+
+                // ---- NORMAL TITLE TEXT ----
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: isSmall ? 26 : 34,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF4A155A),
+                  ),
                 ),
+
                 const SizedBox(height: 12),
+
+                // ---- NORMAL SUBTITLE TEXT ----
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: AnimatedTextKit(
-                    isRepeatingAnimation: false,
-                    animatedTexts: [
-                      TyperAnimatedText(
-                        widget.subtitle,
-                        textStyle: TextStyle(
-                          fontSize: isSmall ? 16 : 20,
-                          color: Colors.black54,
-                        ),
-                        speed: const Duration(milliseconds: 50),
-                      ),
-                    ],
+                  child: Text(
+                    widget.subtitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isSmall ? 16 : 20,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
               ],

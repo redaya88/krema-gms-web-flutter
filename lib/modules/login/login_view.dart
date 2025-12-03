@@ -69,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<LoginController>();
+    Get.find<LoginController>();
 
     return Scaffold(
       body: LayoutBuilder(
