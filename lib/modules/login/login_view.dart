@@ -114,7 +114,12 @@ class _LoginViewState extends State<LoginView> {
         Expanded(
           flex: 2,
           child: Container(
-            color: const Color.fromARGB(255, 229, 200, 233),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/backgrounds/background-1.jpg"),
+                fit: BoxFit.cover, // makes image fill the whole area
+              ),
+            ),
             child: LoginSlider(
               slides: slides,
               pageController: _pageController,
