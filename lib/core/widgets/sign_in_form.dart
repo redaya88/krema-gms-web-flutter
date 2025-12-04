@@ -5,11 +5,15 @@ import '../../modules/login/login_controller.dart';
 class SignInForm extends StatelessWidget {
   SignInForm({super.key});
 
-  final controller = Get.put(LoginController()); // use your existing controller
+  final controller = Get.put(LoginController());
+  final RxBool hidePassword = true.obs;
 
   @override
   Widget build(BuildContext context) {
-    const Color darkPurple = Color(0xFF8A00D4);
+    // THEME COLORS
+    const Color deepGray = Color(0xFF1F1F1F);      // Dark accents
+    const Color borderGray = Color(0xFF3A3A3A);    // Outline
+    const Color textColor = Color(0xFF1F1F1F);     // Visible text (deep gray)
 
     return Obx(() {
       return Column(
@@ -21,6 +25,7 @@ class SignInForm extends StatelessWidget {
               "Sign In",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: deepGray,
                   ),
             ),
           ),
@@ -29,28 +34,61 @@ class SignInForm extends StatelessWidget {
           // USERNAME FIELD
           TextField(
             onChanged: (value) => controller.username.value = value,
+            style: const TextStyle(color: textColor), // <<< FIXED
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white, // <<< white background
               labelText: "Email / Username",
-              prefixIcon: const Icon(Icons.person_outline),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+              labelStyle: const TextStyle(color: borderGray), // <<< visible label
+              prefixIcon: Icon(Icons.person_outline, color: borderGray),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: borderGray, width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: deepGray, width: 1.5),
               ),
             ),
           ),
+
           const SizedBox(height: 16),
 
-          // PASSWORD FIELD
-          TextField(
-            obscureText: true,
-            onChanged: (value) => controller.password.value = value,
-            decoration: InputDecoration(
-              labelText: "Password",
-              prefixIcon: const Icon(Icons.lock_outline),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+          // PASSWORD FIELD WITH EYE TOGGLE
+          Obx(() {
+            return TextField(
+              obscureText: hidePassword.value,
+              onChanged: (value) => controller.password.value = value,
+              style: const TextStyle(color: textColor), // <<< FIXED
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                labelText: "Password",
+                labelStyle: const TextStyle(color: borderGray),
+                prefixIcon: Icon(Icons.lock_outline, color: borderGray),
+
+                // Toggle eye
+                suffixIcon: GestureDetector(
+                  onTap: () => hidePassword.value = !hidePassword.value,
+                  child: Icon(
+                    hidePassword.value
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: borderGray,
+                  ),
+                ),
+
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: borderGray, width: 1.2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: deepGray, width: 1.5),
+                ),
               ),
-            ),
-          ),
+            );
+          }),
 
           const SizedBox(height: 22),
 
@@ -61,11 +99,9 @@ class SignInForm extends StatelessWidget {
             child: ElevatedButton(
               onPressed: controller.isLoading.value
                   ? null
-                  : () {
-                      controller.login();
-                    },
+                  : () => controller.login(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: darkPurple,
+                backgroundColor: deepGray,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -74,7 +110,10 @@ class SignInForm extends StatelessWidget {
                   ? const SizedBox(
                       height: 24,
                       width: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : const Text(
                       "Login",
@@ -93,7 +132,10 @@ class SignInForm extends StatelessWidget {
           Center(
             child: TextButton(
               onPressed: () {},
-              child: const Text("Forgot password?"),
+              child: const Text(
+                "Forgot password?",
+                style: TextStyle(color: borderGray),
+              ),
             ),
           ),
         ],

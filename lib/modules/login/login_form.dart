@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-// import '../../core/widgets/glass_popup.dart';
 import '../../core/widgets/sign_in_form.dart';
 
 class PrettyLoginForm extends StatelessWidget {
@@ -16,21 +14,22 @@ class PrettyLoginForm extends StatelessWidget {
 
         double dialogWidth;
         if (width >= 1200) {
-          dialogWidth = 420; // Desktop
+          dialogWidth = 420;
         } else if (width >= 600) {
-          dialogWidth = 360; // Tablet
+          dialogWidth = 360;
         } else {
-          dialogWidth = width * 0.9; // Mobile
+          dialogWidth = width * 0.9;
         }
 
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
           ),
-          elevation: 3,
+          backgroundColor: Colors.white,
+          elevation: 6,
           child: Container(
             width: dialogWidth,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(26),
             child: SingleChildScrollView(
               child: SignInForm(),
             ),
@@ -42,20 +41,26 @@ class PrettyLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color lightPink = Color(0xFFF4D7FF);
-    const Color darkPurple = Color(0xFF8A00D4);
+    const Color deepGray = Color(0xFF2C2C2C);
+    const Color fieldBorder = Color(0xFF444444);
+    const Color textColor = Color(0xFF1A1A1A);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // EMAIL FIELD
         TextField(
-          onChanged: (value) => {},
           decoration: InputDecoration(
             labelText: "Email / Username",
-            prefixIcon: const Icon(Icons.person_outline),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+            labelStyle: const TextStyle(color: textColor),
+            prefixIcon: const Icon(Icons.person_outline, color: fieldBorder),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: fieldBorder, width: 1.2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: deepGray, width: 1.5),
             ),
           ),
         ),
@@ -64,12 +69,18 @@ class PrettyLoginForm extends StatelessWidget {
 
         // PASSWORD FIELD
         TextField(
-          onChanged: (value) => {},
+          obscureText: true,
           decoration: InputDecoration(
             labelText: "Password",
-            prefixIcon: const Icon(Icons.lock_outline),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+            labelStyle: const TextStyle(color: textColor),
+            prefixIcon: const Icon(Icons.lock_outline, color: fieldBorder),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: fieldBorder, width: 1.2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: deepGray, width: 1.5),
             ),
           ),
         ),
@@ -79,27 +90,27 @@ class PrettyLoginForm extends StatelessWidget {
         // SIGN UP BUTTON
         SizedBox(
           width: double.infinity,
-          height: 50,
+          height: 48,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: darkPurple,
+              backgroundColor: deepGray,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(28),
               ),
             ),
             onPressed: () {},
             child: const Text(
               "SIGN UP",
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
                 color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
 
         // SIGN IN LINK
         RichText(
@@ -110,8 +121,9 @@ class PrettyLoginForm extends StatelessWidget {
               TextSpan(
                 text: "Sign In",
                 style: const TextStyle(
-                  color: Colors.purple,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
                 ),
                 mouseCursor: SystemMouseCursors.click,
                 recognizer: TapGestureRecognizer()
@@ -126,20 +138,23 @@ class PrettyLoginForm extends StatelessWidget {
         // DIVIDER
         const Row(
           children: [
-            Expanded(child: Divider(thickness: 1, indent: 40, endIndent: 10)),
-            Text("OR"),
-            Expanded(child: Divider(thickness: 1, indent: 10, endIndent: 40)),
+            Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text("OR"),
+            ),
+            Expanded(child: Divider(color: Colors.grey, thickness: 1)),
           ],
         ),
 
         const SizedBox(height: 20),
 
-        // SOCIAL LOGIN ICONS
+        // SOCIAL LOGIN
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _socialIcon('assets/icons/email-icon.png'),
-            const SizedBox(width: 25),
+            const SizedBox(width: 28),
             _socialIcon('assets/icons/google-icon.png'),
           ],
         ),
@@ -147,15 +162,14 @@ class PrettyLoginForm extends StatelessWidget {
     );
   }
 
-  // SOCIAL ICON
   static Widget _socialIcon(String imagePath) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.deepPurpleAccent,
-          width: 1,
+          color: Color(0xFF666666),
+          width: 1.2,
         ),
       ),
       child: Image.asset(

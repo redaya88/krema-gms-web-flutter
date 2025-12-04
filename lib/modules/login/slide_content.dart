@@ -22,6 +22,10 @@ class _SlideContentState extends State<SlideContent>
   late Animation<double> _fade;
   late Animation<double> _scale;
 
+  static const Color deepGray = Color(0xFF1E1E1E);
+  static const Color softGray = Color(0xFF9E9E9E);
+  static const Color white = Colors.white;
+
   @override
   void initState() {
     super.initState();
@@ -53,58 +57,74 @@ class _SlideContentState extends State<SlideContent>
     final width = MediaQuery.of(context).size.width;
     final isSmall = width < 900;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final imageHeight = isSmall
-            ? constraints.maxHeight * 0.55
-            : constraints.maxHeight * 0.65;
+    return Container(
+      // 🌈 GRADIENT BACKGROUND ADDED HERE
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF2A2A2A), // deep gray top
+            Color(0xFF1E1E1E), // deeper gray middle
+            Color(0xFF0F0F0F), // almost black bottom
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
 
-        return FadeTransition(
-          opacity: _fade,
-          child: ScaleTransition(
-            scale: _scale,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: imageHeight,
-                  child: Image.asset(
-                    widget.image,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(height: 30),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final imageHeight = isSmall
+              ? constraints.maxHeight * 0.55
+              : constraints.maxHeight * 0.65;
 
-                // ---- NORMAL TITLE TEXT ----
-                Text(
-                  widget.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isSmall ? 26 : 34,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF4A155A),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // ---- NORMAL SUBTITLE TEXT ----
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    widget.subtitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isSmall ? 16 : 20,
-                      color: Colors.black54,
+          return FadeTransition(
+            opacity: _fade,
+            child: ScaleTransition(
+              scale: _scale,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: imageHeight,
+                    child: Image.asset(
+                      widget.image,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 30),
+
+                  // ---- TITLE (WHITE) ----
+                  Text(
+                    widget.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isSmall ? 26 : 34,
+                      fontWeight: FontWeight.w700,
+                      color: white,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // ---- SUBTITLE (SOFT GRAY) ----
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      widget.subtitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isSmall ? 16 : 20,
+                        color: softGray,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
