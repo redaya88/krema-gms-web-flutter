@@ -12,7 +12,7 @@ class _DashboardViewState extends State<DashboardView> {
   bool isDarkMode = true;
   bool isSidebarExpanded = true;
   String selectedProfileOption = 'Profile';
-  int selectedSidebarIndex = 0; // active item index
+  int selectedSidebarIndex = 0;
 
   final List<String> profileOptions = ['Profile', 'Settings', 'Logout'];
 
@@ -55,7 +55,7 @@ class _DashboardViewState extends State<DashboardView> {
                 Container(
                   height: 60,
                   color: theme.colorScheme.surface,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       if (isMobile)
@@ -73,7 +73,7 @@ class _DashboardViewState extends State<DashboardView> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
 
                       // Theme toggle
                       IconButton(
@@ -90,39 +90,29 @@ class _DashboardViewState extends State<DashboardView> {
                           color: theme.colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
 
-                      // Profile dropdown
-                      DropdownButton<String>(
-                        value: selectedProfileOption,
-                        isDense: true,
-                        underline: const SizedBox(),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          setState(() {
-                            selectedProfileOption = value;
-                          });
-                        },
-                        items: profileOptions.map((option) {
-                          return DropdownMenuItem(
-                            value: option,
-                            child: Text(
-                              option,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        selectedItemBuilder: (context) {
-                          return profileOptions.map((option) {
-                            return Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                selectedProfileOption,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            );
-                          }).toList();
-                        },
+                      // Profile dropdown (works on mobile too)
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 100, maxWidth: 180),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: selectedProfileOption,
+                            onChanged: (value) {
+                              if (value == null) return;
+                              setState(() {
+                                selectedProfileOption = value;
+                              });
+                            },
+                            items: profileOptions.map((option) {
+                              return DropdownMenuItem(
+                                value: option,
+                                child: Text(option, overflow: TextOverflow.ellipsis),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
                     ],
                   ),
