@@ -22,10 +22,6 @@ class _SlideContentState extends State<SlideContent>
   late Animation<double> _fade;
   late Animation<double> _scale;
 
-  static const Color deepGray = Color(0xFF1E1E1E);
-  static const Color softGray = Color(0xFF9E9E9E);
-  static const Color white = Colors.white;
-
   @override
   void initState() {
     super.initState();
@@ -54,23 +50,22 @@ class _SlideContentState extends State<SlideContent>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final isSmall = width < 900;
 
     return Container(
-      // 🌈 GRADIENT BACKGROUND ADDED HERE
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFF2A2A2A), // deep gray top
-            Color(0xFF1E1E1E), // deeper gray middle
-            Color(0xFF0F0F0F), // almost black bottom
-          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
+          colors: [
+            theme.colorScheme.primaryContainer,
+            theme.colorScheme.primary,
+            theme.colorScheme.background,
+          ],
         ),
       ),
-
       child: LayoutBuilder(
         builder: (context, constraints) {
           final imageHeight = isSmall
@@ -91,31 +86,27 @@ class _SlideContentState extends State<SlideContent>
                       fit: BoxFit.contain,
                     ),
                   ),
-
                   const SizedBox(height: 30),
 
-                  // ---- TITLE (WHITE) ----
+                  // TITLE
                   Text(
                     widget.title,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isSmall ? 26 : 34,
-                      fontWeight: FontWeight.w700,
-                      color: white,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onBackground,
                     ),
                   ),
-
                   const SizedBox(height: 12),
 
-                  // ---- SUBTITLE (SOFT GRAY) ----
+                  // SUBTITLE
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       widget.subtitle,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: isSmall ? 16 : 20,
-                        color: softGray,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onBackground.withOpacity(0.7),
                       ),
                     ),
                   ),

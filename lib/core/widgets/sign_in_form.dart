@@ -10,23 +10,18 @@ class SignInForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // THEME COLORS
-    const Color deepGray = Color(0xFF1F1F1F);      // Dark accents
-    const Color borderGray = Color(0xFF3A3A3A);    // Outline
-    const Color textColor = Color(0xFF1F1F1F);     // Visible text (deep gray)
+    final theme = Theme.of(context);
 
     return Obx(() {
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // TITLE
           Center(
             child: Text(
               "Sign In",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: deepGray,
-                  ),
+              style: theme.textTheme.headlineSmall,
             ),
           ),
           const SizedBox(height: 24),
@@ -34,20 +29,29 @@ class SignInForm extends StatelessWidget {
           // USERNAME FIELD
           TextField(
             onChanged: (value) => controller.username.value = value,
-            style: const TextStyle(color: textColor), // <<< FIXED
+            style: theme.textTheme.bodyMedium,
             decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white, // <<< white background
               labelText: "Email / Username",
-              labelStyle: const TextStyle(color: borderGray), // <<< visible label
-              prefixIcon: Icon(Icons.person_outline, color: borderGray),
+              labelStyle: theme.textTheme.labelLarge,
+              prefixIcon: Icon(
+                Icons.person_outline,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+              filled: true,
+              fillColor: theme.colorScheme.surface,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: borderGray, width: 1.2),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.outline,
+                  width: 1.2,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: deepGray, width: 1.5),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
@@ -55,40 +59,42 @@ class SignInForm extends StatelessWidget {
           const SizedBox(height: 16),
 
           // PASSWORD FIELD WITH EYE TOGGLE
-          Obx(() {
-            return TextField(
-              obscureText: hidePassword.value,
-              onChanged: (value) => controller.password.value = value,
-              style: const TextStyle(color: textColor), // <<< FIXED
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                labelText: "Password",
-                labelStyle: const TextStyle(color: borderGray),
-                prefixIcon: Icon(Icons.lock_outline, color: borderGray),
-
-                // Toggle eye
-                suffixIcon: GestureDetector(
-                  onTap: () => hidePassword.value = !hidePassword.value,
-                  child: Icon(
-                    hidePassword.value
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: borderGray,
-                  ),
-                ),
-
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: borderGray, width: 1.2),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: deepGray, width: 1.5),
+          TextField(
+            obscureText: hidePassword.value,
+            onChanged: (value) => controller.password.value = value,
+            style: theme.textTheme.bodyMedium,
+            decoration: InputDecoration(
+              labelText: "Password",
+              labelStyle: theme.textTheme.labelLarge,
+              prefixIcon: Icon(
+                Icons.lock_outline,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+              filled: true,
+              fillColor: theme.colorScheme.surface,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.outline,
+                  width: 1.2,
                 ),
               ),
-            );
-          }),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 1.5,
+                ),
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () => hidePassword.value = !hidePassword.value,
+                child: Icon(
+                  hidePassword.value ? Icons.visibility_off : Icons.visibility,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ),
 
           const SizedBox(height: 22),
 
@@ -97,30 +103,28 @@ class SignInForm extends StatelessWidget {
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: controller.isLoading.value
-                  ? null
-                  : () => controller.login(),
+              onPressed:
+                  controller.isLoading.value ? null : () => controller.login(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: deepGray,
+                backgroundColor: theme.colorScheme.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(28),
                 ),
               ),
               child: controller.isLoading.value
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 24,
                       width: 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                       ),
                     )
-                  : const Text(
+                  : Text(
                       "Login",
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
                       ),
                     ),
             ),
@@ -132,9 +136,11 @@ class SignInForm extends StatelessWidget {
           Center(
             child: TextButton(
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 "Forgot password?",
-                style: TextStyle(color: borderGray),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                ),
               ),
             ),
           ),

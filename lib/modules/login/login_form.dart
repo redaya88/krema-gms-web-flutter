@@ -1,31 +1,30 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../core/widgets/sign_in_form.dart';
 
 class PrettyLoginForm extends StatelessWidget {
   const PrettyLoginForm({super.key});
 
   void showSignInPopup(BuildContext context) {
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) {
         final width = MediaQuery.of(context).size.width;
-
-        double dialogWidth;
-        if (width >= 1200) {
-          dialogWidth = 420;
-        } else if (width >= 600) {
-          dialogWidth = 360;
-        } else {
-          dialogWidth = width * 0.9;
-        }
+        double dialogWidth = width >= 1200
+            ? 420
+            : width >= 600
+                ? 360
+                : width * 0.9;
 
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
           elevation: 6,
           child: Container(
             width: dialogWidth,
@@ -41,69 +40,106 @@ class PrettyLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color deepGray = Color(0xFF2C2C2C);
-    const Color fieldBorder = Color(0xFF444444);
-    const Color textColor = Color(0xFF1A1A1A);
+    final theme = Theme.of(context);
+    final text = theme.textTheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // EMAIL FIELD
+        /// 🌗 THEME TOGGLE BUTTON
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: Icon(
+                Get.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: theme.colorScheme.onSurface,
+              ),
+              onPressed: () {
+                Get.changeThemeMode(
+                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
+                );
+              },
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 10),
+
+        /// EMAIL FIELD
         TextField(
+          style: theme.textTheme.bodyMedium,
           decoration: InputDecoration(
             labelText: "Email / Username",
-            labelStyle: const TextStyle(color: textColor),
-            prefixIcon: const Icon(Icons.person_outline, color: fieldBorder),
+            labelStyle: theme.textTheme.labelLarge,
+            prefixIcon: Icon(
+              Icons.person_outline,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+            filled: true,
+            fillColor: theme.colorScheme.surface,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: fieldBorder, width: 1.2),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline,
+                width: 1.2,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: deepGray, width: 1.5),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 1.5,
+              ),
             ),
           ),
         ),
 
         const SizedBox(height: 15),
 
-        // PASSWORD FIELD
+        /// PASSWORD FIELD
         TextField(
           obscureText: true,
+          style: theme.textTheme.bodyMedium,
           decoration: InputDecoration(
             labelText: "Password",
-            labelStyle: const TextStyle(color: textColor),
-            prefixIcon: const Icon(Icons.lock_outline, color: fieldBorder),
+            labelStyle: theme.textTheme.labelLarge,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+            filled: true,
+            fillColor: theme.colorScheme.surface,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: fieldBorder, width: 1.2),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline,
+                width: 1.2,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: deepGray, width: 1.5),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 1.5,
+              ),
             ),
           ),
         ),
 
         const SizedBox(height: 25),
 
-        // SIGN UP BUTTON
+        /// SIGN UP BUTTON
         SizedBox(
           width: double.infinity,
           height: 48,
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: deepGray,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(28),
-              ),
-            ),
             onPressed: () {},
-            child: const Text(
+            style: theme.elevatedButtonTheme.style,
+            child: Text(
               "SIGN UP",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
+              style: text.labelLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -112,20 +148,20 @@ class PrettyLoginForm extends StatelessWidget {
 
         const SizedBox(height: 14),
 
-        // SIGN IN LINK
+        /// SIGN IN LINK
         RichText(
           text: TextSpan(
             text: "Already have an Account? ",
-            style: TextStyle(color: Colors.grey.shade700),
+            style: text.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+            ),
             children: [
               TextSpan(
                 text: "Sign In",
-                style: const TextStyle(
-                  color: Colors.black,
+                style: text.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
                 ),
-                mouseCursor: SystemMouseCursors.click,
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => showSignInPopup(context),
               ),
@@ -135,40 +171,44 @@ class PrettyLoginForm extends StatelessWidget {
 
         const SizedBox(height: 25),
 
-        // DIVIDER
-        const Row(
+        /// DIVIDER
+        Row(
           children: [
-            Expanded(child: Divider(color: Colors.grey, thickness: 1)),
-            Padding(
+            Expanded(
+              child: Divider(color: theme.colorScheme.outline),
+            ),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text("OR"),
             ),
-            Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+            Expanded(
+              child: Divider(color: theme.colorScheme.outline),
+            ),
           ],
         ),
 
         const SizedBox(height: 20),
 
-        // SOCIAL LOGIN
+        /// SOCIAL LOGIN
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _socialIcon('assets/icons/email-icon.png'),
+            _socialIcon('assets/icons/email-icon.png', theme),
             const SizedBox(width: 28),
-            _socialIcon('assets/icons/google-icon.png'),
+            _socialIcon('assets/icons/google-icon.png', theme),
           ],
         ),
       ],
     );
   }
 
-  static Widget _socialIcon(String imagePath) {
+  static Widget _socialIcon(String imagePath, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: Color(0xFF666666),
+          color: theme.colorScheme.outline,
           width: 1.2,
         ),
       ),

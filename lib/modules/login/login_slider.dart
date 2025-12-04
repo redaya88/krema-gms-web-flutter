@@ -20,13 +20,14 @@ class LoginSlider extends StatelessWidget {
       onPageChanged: onPageChanged,
       itemCount: slides.length,
       itemBuilder: (_, index) {
+        final slide = slides[index];
         return Center(
           child: SizedBox.expand(
             child: SlideContent(
               key: ValueKey(index),
-              image: slides[index]["image"]!,
-              title: slides[index]["title"]!,
-              subtitle: slides[index]["subtitle"]!,
+              image: slide["image"]!,
+              title: slide["title"]!,
+              subtitle: slide["subtitle"]!,
             ),
           ),
         );

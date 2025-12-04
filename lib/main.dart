@@ -6,6 +6,7 @@ import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/auth_service.dart';
 import 'core/services/storage_service.dart';
+import 'core/theme/app_theme.dart';
 import 'data/providers/auth_provider.dart';
 
 void main() async {
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "Krema GMS Web",
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.LOGIN,
       getPages: AppPages.pages,
