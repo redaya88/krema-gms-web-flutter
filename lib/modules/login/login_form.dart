@@ -42,6 +42,7 @@ class PrettyLoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final text = theme.textTheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -74,7 +75,7 @@ class PrettyLoginForm extends StatelessWidget {
             labelStyle: theme.textTheme.labelLarge,
             prefixIcon: Icon(
               Icons.person_outline,
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             filled: true,
             fillColor: theme.colorScheme.surface,
@@ -106,7 +107,7 @@ class PrettyLoginForm extends StatelessWidget {
             labelStyle: theme.textTheme.labelLarge,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             filled: true,
             fillColor: theme.colorScheme.surface,
@@ -139,7 +140,7 @@ class PrettyLoginForm extends StatelessWidget {
             child: Text(
               "SIGN UP",
               style: text.labelLarge?.copyWith(
-                color: theme.colorScheme.onPrimary,
+                color: theme.colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -153,7 +154,7 @@ class PrettyLoginForm extends StatelessWidget {
           text: TextSpan(
             text: "Already have an Account? ",
             style: text.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             children: [
               TextSpan(
@@ -189,35 +190,42 @@ class PrettyLoginForm extends StatelessWidget {
 
         const SizedBox(height: 20),
 
-        /// SOCIAL LOGIN
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _socialIcon('assets/icons/email-icon.png', theme),
-            const SizedBox(width: 28),
-            _socialIcon('assets/icons/google-icon.png', theme),
-          ],
+        SizedBox(
+          width: double.infinity,
+          height: 48,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: theme.elevatedButtonTheme.style,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  child: Image.asset(
+                    isDark
+                        ? 'assets/icons/google-dark.png'
+                        : 'assets/icons/google-light.png',
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  "Sign in with Google",
+                  style: text.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
-    );
-  }
-
-  static Widget _socialIcon(String imagePath, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: theme.colorScheme.outline,
-          width: 1.2,
-        ),
-      ),
-      child: Image.asset(
-        imagePath,
-        width: 24,
-        height: 24,
-        fit: BoxFit.contain,
-      ),
     );
   }
 }

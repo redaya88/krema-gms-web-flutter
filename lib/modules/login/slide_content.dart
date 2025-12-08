@@ -62,7 +62,7 @@ class _SlideContentState extends State<SlideContent>
           colors: [
             theme.colorScheme.primaryContainer,
             theme.colorScheme.primary,
-            theme.colorScheme.background,
+            theme.colorScheme.surface,
           ],
         ),
       ),
@@ -94,7 +94,7 @@ class _SlideContentState extends State<SlideContent>
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onBackground,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -106,7 +106,7 @@ class _SlideContentState extends State<SlideContent>
                       widget.subtitle,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onBackground.withOpacity(0.7),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ),

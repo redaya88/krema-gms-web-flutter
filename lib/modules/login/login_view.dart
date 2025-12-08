@@ -69,9 +69,11 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     Get.find<LoginController>();
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isSmallScreen = constraints.maxWidth < 900;
@@ -109,6 +111,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Widget _buildHorizontalLayout() {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
@@ -129,11 +132,23 @@ class _LoginViewState extends State<LoginView> {
         ),
         Expanded(
           flex: 1,
-          child: Center(
-            child: Container(
-              width: 380,
-              padding: const EdgeInsets.all(20),
-              child: const PrettyLoginForm(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 18,
+                  offset: const Offset(-1, 0), // left shadow
+                ),
+              ],
+            ),
+            child: Center(
+              child: Container(
+                width: 380,
+                padding: const EdgeInsets.all(20),
+                child: const PrettyLoginForm(),
+              ),
             ),
           ),
         ),

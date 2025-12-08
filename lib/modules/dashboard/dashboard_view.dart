@@ -35,7 +35,8 @@ class _DashboardViewState extends State<DashboardView> {
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: isSidebarExpanded ? 220 : 60,
-              color: theme.colorScheme.primaryContainer,
+              // color: isDark ? theme.colorScheme.primaryContainer : theme.colorScheme.secondaryContainer,
+              color: theme.colorScheme.surface,
               child: _buildSidebar(expanded: isSidebarExpanded),
             ),
 
@@ -72,12 +73,12 @@ class _DashboardViewState extends State<DashboardView> {
                             });
                           },
                         ),
-                        
+
                       const Spacer(),
 
                       IconButton(
                         icon: Icon(
-                          Theme.of(context).brightness == Brightness.dark
+                          theme.brightness == Brightness.dark
                               ? Icons.light_mode
                               : Icons.dark_mode,
                         ),
@@ -113,7 +114,7 @@ class _DashboardViewState extends State<DashboardView> {
                 // Main content area
                 Expanded(
                   child: Container(
-                    color: theme.colorScheme.background,
+                    color: theme.colorScheme.surface,
                     child: Center(
                       child: Text(
                         'Welcome, ${authService.currentUser.value?.username ?? ''}',
@@ -131,6 +132,8 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget _buildSidebar({required bool expanded}) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         const SizedBox(height: 20),
@@ -144,7 +147,7 @@ class _DashboardViewState extends State<DashboardView> {
               itemBuilder: (context, index) {
                 final feature = features[index];
                 final isActive = selectedFeature == feature.name;
-                final isDark = Theme.of(context).brightness == Brightness.dark;
+                final isDark = theme.brightness == Brightness.dark;
 
                 return ListTile(
                   leading: Image.asset(
@@ -152,11 +155,14 @@ class _DashboardViewState extends State<DashboardView> {
                     width: 22,
                     height: 22,
                     fit: BoxFit.contain,
-                  ), // replace with actual icon
+                  ),
                   title: expanded
                       ? Text(
                           feature.name,
                           overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface
+                          ),
                         )
                       : null,
                   selected: isActive,
