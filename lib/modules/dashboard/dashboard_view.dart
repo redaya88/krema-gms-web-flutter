@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/theme_service.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -9,42 +11,32 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  bool isDarkMode = true;
   bool isSidebarExpanded = true;
   String selectedProfileOption = 'Profile';
-  int selectedSidebarIndex = 0;
+  String? selectedFeature;
 
   final List<String> profileOptions = ['Profile', 'Settings', 'Logout'];
+  final authService = Get.find<AuthService>();
 
-  final List<_SidebarItem> sidebarItems = [
-    _SidebarItem(icon: Icons.dashboard, label: 'Dashboard'),
-    _SidebarItem(icon: Icons.shopping_cart, label: 'Orders'),
-    _SidebarItem(icon: Icons.people, label: 'Users'),
-    _SidebarItem(icon: Icons.settings, label: 'Settings'),
-    _SidebarItem(icon: Icons.description, label: 'Very Long Menu Item Example'),
-  ];
+  bool get isMobile => MediaQuery.of(context).size.width < 800;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final bool isMobile = screenWidth < 600;
 
     return Scaffold(
-      drawer: isMobile
-          ? Drawer(
-              child: _buildSidebarContent(theme, expanded: true),
-            )
-          : null,
+      key: _scaffoldKey,
+      drawer: isMobile ? Drawer(child: _buildSidebar(expanded: true)) : null,
       body: Row(
         children: [
-          // Sidebar for desktop/tablet
+          // Desktop sidebar
           if (!isMobile)
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: isSidebarExpanded ? 220 : 60,
               color: theme.colorScheme.primaryContainer,
-              child: _buildSidebarContent(theme, expanded: isSidebarExpanded),
+              child: _buildSidebar(expanded: isSidebarExpanded),
             ),
 
           // Main content
@@ -54,78 +46,78 @@ class _DashboardViewState extends State<DashboardView> {
                 // Top bar
                 Container(
                   height: 60,
-                  color: theme.colorScheme.surface,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  color: theme.colorScheme.surface,
                   child: Row(
                     children: [
+                      // Mobile: menu button
                       if (isMobile)
-                        Builder(
-                          builder: (context) => IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () => Scaffold.of(context).openDrawer(),
+                        IconButton(
+                          icon: const Icon(Icons.menu),
+                          onPressed: () =>
+                              _scaffoldKey.currentState?.openDrawer(),
+                        ),
+
+                      // Desktop: toggle button
+                      if (!isMobile)
+                        IconButton(
+                          icon: Icon(
+                            isSidebarExpanded
+                                ? Icons.arrow_back_ios
+                                : Icons.arrow_forward_ios,
                           ),
+                          onPressed: () {
+                            setState(() {
+                              isSidebarExpanded = !isSidebarExpanded;
+                            });
+                          },
                         ),
+                        
+                      const Spacer(),
 
-                      Expanded(
-                        child: Text(
-                          'Dashboard',
-                          style: theme.textTheme.headlineSmall,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // Theme toggle
                       IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isDarkMode = !isDarkMode;
-                            Get.changeThemeMode(
-                              isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                            );
-                          });
-                        },
                         icon: Icon(
-                          isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                          color: theme.colorScheme.primary,
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Icons.light_mode
+                              : Icons.dark_mode,
                         ),
+                        onPressed: () => Get.find<ThemeService>().toggleTheme(),
                       ),
-                      const SizedBox(width: 8),
 
-                      // Profile dropdown (works on mobile too)
-                      Container(
-                        constraints: const BoxConstraints(minWidth: 100, maxWidth: 180),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: selectedProfileOption,
-                            onChanged: (value) {
-                              if (value == null) return;
-                              setState(() {
-                                selectedProfileOption = value;
-                              });
-                            },
-                            items: profileOptions.map((option) {
-                              return DropdownMenuItem(
-                                value: option,
-                                child: Text(option, overflow: TextOverflow.ellipsis),
-                              );
-                            }).toList(),
-                          ),
+                      // const Spacer(),
+
+                      // Profile dropdown
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: selectedProfileOption,
+                          items: profileOptions
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() => selectedProfileOption = value);
+                            if (value == 'Logout') {
+                              authService.logout();
+                              // Navigate to login if needed
+                            }
+                          },
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                // Body content
+                // Main content area
                 Expanded(
                   child: Container(
                     color: theme.colorScheme.background,
                     child: Center(
                       child: Text(
-                        'Dashboard Content for "${sidebarItems[selectedSidebarIndex].label}"',
-                        style: theme.textTheme.headlineMedium,
+                        'Welcome, ${authService.currentUser.value?.username ?? ''}',
+                        style: theme.textTheme.headlineSmall,
                       ),
                     ),
                   ),
@@ -138,138 +130,53 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  // Sidebar content builder
-  Widget _buildSidebarContent(ThemeData theme, {required bool expanded}) {
+  Widget _buildSidebar({required bool expanded}) {
     return Column(
       children: [
-        // Always visible toggle button
-        Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            onPressed: () {
-              setState(() {
-                isSidebarExpanded = !isSidebarExpanded;
-              });
-            },
-            icon: Icon(
-              isSidebarExpanded ? Icons.arrow_back : Icons.arrow_forward,
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-          ),
-        ),
         const SizedBox(height: 20),
-
-        // Scrollable sidebar items
         Expanded(
-          child: ListView.builder(
-            itemCount: sidebarItems.length,
-            itemBuilder: (context, index) {
-              final item = sidebarItems[index];
-              final isActive = selectedSidebarIndex == index;
-              return _buildSidebarItem(item, theme, expanded, isActive, index);
-            },
-          ),
+          child: Obx(() {
+            final features = authService.features;
+            if (features.isEmpty) return const SizedBox();
+
+            return ListView.builder(
+              itemCount: features.length,
+              itemBuilder: (context, index) {
+                final feature = features[index];
+                final isActive = selectedFeature == feature.name;
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+
+                return ListTile(
+                  leading: Image.asset(
+                    isDark ? feature.darkIconPath : feature.lightIconPath,
+                    width: 22,
+                    height: 22,
+                    fit: BoxFit.contain,
+                  ), // replace with actual icon
+                  title: expanded
+                      ? Text(
+                          feature.name,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : null,
+                  selected: isActive,
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = feature.name;
+                    });
+                    // Close drawer on mobile
+                    if (isMobile) Navigator.of(context).pop();
+                  },
+                  horizontalTitleGap: 10,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: expanded ? 16 : 8,
+                  ),
+                );
+              },
+            );
+          }),
         ),
       ],
     );
   }
-
-  // Sidebar item with hover, tooltip, and active highlight
-  Widget _buildSidebarItem(
-      _SidebarItem item, ThemeData theme, bool expanded, bool isActive, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-      child: _HoverContainer(
-        expanded: expanded,
-        label: item.label,
-        isActive: isActive,
-        onTap: () {
-          setState(() {
-            selectedSidebarIndex = index;
-          });
-        },
-        child: Row(
-          children: [
-            Icon(item.icon, color: Colors.white),
-            if (expanded) ...[
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: const TextStyle(color: Colors.white),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Hover container widget with active highlight
-class _HoverContainer extends StatefulWidget {
-  final Widget child;
-  final bool expanded;
-  final String label;
-  final bool isActive;
-  final VoidCallback? onTap;
-
-  const _HoverContainer({
-    required this.child,
-    required this.expanded,
-    required this.label,
-    this.isActive = false,
-    this.onTap,
-  });
-
-  @override
-  State<_HoverContainer> createState() => _HoverContainerState();
-}
-
-class _HoverContainerState extends State<_HoverContainer> {
-  bool isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    Color backgroundColor;
-    if (widget.isActive) {
-      backgroundColor = Colors.white.withOpacity(0.2);
-    } else if (isHovered) {
-      backgroundColor = Colors.white.withOpacity(0.1);
-    } else {
-      backgroundColor = Colors.transparent;
-    }
-
-    final childWidget = Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: widget.child,
-    );
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: widget.expanded
-            ? childWidget
-            : Tooltip(
-                message: widget.label,
-                child: childWidget,
-              ),
-      ),
-    );
-  }
-}
-
-// Sidebar item model
-class _SidebarItem {
-  final IconData icon;
-  final String label;
-  _SidebarItem({required this.icon, required this.label});
 }

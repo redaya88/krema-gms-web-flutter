@@ -7,7 +7,7 @@ class AuthProvider extends GetConnect {
   @override
   void onInit() {
     // httpClient.baseUrl = "http://localhost:3000"; // your backend API
-    httpClient.baseUrl = "https://probable-fiesta-69qvp5gq6jvxh5p97-3000.app.github.dev"; // your backend API
+    httpClient.baseUrl = "https://ominous-space-lamp-7v67x596q647fxqjv-3000.app.github.dev"; // your backend API
     httpClient.timeout = const Duration(seconds: 15);
     super.onInit();
   }

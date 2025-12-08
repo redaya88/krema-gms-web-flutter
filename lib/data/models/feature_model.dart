@@ -4,6 +4,8 @@ class FeatureModel {
   final int featureIndex;
   final String name;
   final String description;
+  final String lightIconPath;
+  final String darkIconPath;
   final bool banned;
 
   FeatureModel({
@@ -12,6 +14,8 @@ class FeatureModel {
     required this.featureIndex,
     required this.name,
     required this.description,
+    required this.lightIconPath,
+    required this.darkIconPath,
     required this.banned,
   });
 
@@ -22,6 +26,8 @@ class FeatureModel {
       featureIndex: json['feature_index'],
       name: json['name'],
       description: json['description'],
+      lightIconPath: json['light_icon_path'],
+      darkIconPath: json['dark_icon_path'],
       banned: json['banned'],
     );
   }

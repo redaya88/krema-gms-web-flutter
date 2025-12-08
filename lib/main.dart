@@ -6,6 +6,7 @@ import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/auth_service.dart';
 import 'core/services/storage_service.dart';
+import 'core/services/theme_service.dart';
 import 'core/theme/app_theme.dart';
 import 'data/providers/auth_provider.dart';
 
@@ -15,10 +16,11 @@ void main() async {
   // Initialize GetStorage
   await GetStorage.init();
 
-  // Register services
-  Get.put(StorageService());
-  Get.put(AuthProvider()); // singleton
-  Get.put(AuthService());
+  // Register services as singletons
+  Get.put<StorageService>(StorageService(), permanent: true);
+  Get.put<AuthProvider>(AuthProvider(), permanent: true);
+  Get.put<AuthService>(AuthService(), permanent: true);
+  Get.put<ThemeService>(ThemeService(), permanent: true);
 
   runApp(const MyApp());
 }
@@ -28,13 +30,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeService = Get.find<ThemeService>();
+    
     return GetMaterialApp(
       title: "Krema GMS Web",
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.light,
-      debugShowCheckedModeBanner: false,
+      themeMode: themeService.theme,
+
+      // Initial route
       initialRoute: AppRoutes.LOGIN,
+
+      // Pages
       getPages: AppPages.pages,
     );
   }
