@@ -10,8 +10,10 @@ class AppColors {
   // DARK MODE COLORS
   static const Color darkBackground = Color(0xFF0F0F0F);
   static const Color darkSurface = Color(0xFF1A1A1A);
-  static const Color darkText = Colors.white;
-  static const Color darkSecondaryText = Color(0xFFE0E0E0);
+  static const Color darkText =
+      Color.fromARGB(222, 255, 255, 255); // ~87% opacity
+  static const Color darkSecondaryText =
+      Color.fromARGB(153, 255, 255, 255); // ~60%
 
   // GRAYS (shared)
   static const Color gray800 = Color(0xFF1A1A1A);

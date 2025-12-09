@@ -96,9 +96,49 @@ class SignInForm extends StatelessWidget {
             ),
           ),
 
+          const SizedBox(height: 16),
+
+          // RE ENTER PASSWORD FIELD WITH EYE TOGGLE
+          TextField(
+            obscureText: hidePassword.value,
+            onChanged: (value) => controller.password.value = value,
+            style: theme.textTheme.bodyMedium,
+            decoration: InputDecoration(
+              labelText: "Re-type Password",
+              labelStyle: theme.textTheme.labelLarge,
+              prefixIcon: Icon(
+                Icons.lock_outline,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+              filled: true,
+              fillColor: theme.colorScheme.surface,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.outline,
+                  width: 1.2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 1.5,
+                ),
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () => hidePassword.value = !hidePassword.value,
+                child: Icon(
+                  hidePassword.value ? Icons.visibility_off : Icons.visibility,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ),
+
           const SizedBox(height: 22),
 
-          // LOGIN BUTTON
+          // SIGNUP BUTTON
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -121,7 +161,7 @@ class SignInForm extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      "Login",
+                      "Sign Up",
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.w600,

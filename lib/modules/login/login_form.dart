@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../core/widgets/sign_in_form.dart';
+import '../../core/widgets/sign_up_form.dart';
 
 class PrettyLoginForm extends StatelessWidget {
   const PrettyLoginForm({super.key});
@@ -138,7 +138,7 @@ class PrettyLoginForm extends StatelessWidget {
             onPressed: () {},
             style: theme.elevatedButtonTheme.style,
             child: Text(
-              "SIGN UP",
+              "Sign In",
               style: text.labelLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
@@ -152,16 +152,14 @@ class PrettyLoginForm extends StatelessWidget {
         /// SIGN IN LINK
         RichText(
           text: TextSpan(
-            text: "Already have an Account? ",
-            style: text.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+            style: theme.textTheme.bodyMedium,
+            text: "Don't have an account? ",
             children: [
               TextSpan(
-                text: "Sign In",
-                style: text.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.bold,
+                text: "Register",
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  // color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => showSignInPopup(context),
