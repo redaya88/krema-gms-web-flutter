@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/services/theme_service.dart';
+import 'dashboard_sidebar.dart';
+import 'dashboard_topbar.dart';
+import 'dashboard_content.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -15,11 +17,12 @@ class _DashboardViewState extends State<DashboardView> {
   String selectedProfileOption = 'Profile';
   String? selectedFeature;
 
-  final List<String> profileOptions = ['Profile', 'Settings', 'Logout'];
   final authService = Get.find<AuthService>();
+  final List<String> profileOptions = ['Profile', 'Settings', 'Logout'];
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool get isMobile => MediaQuery.of(context).size.width < 800;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,101 +30,39 @@ class _DashboardViewState extends State<DashboardView> {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: isMobile ? Drawer(child: _buildSidebar(expanded: true)) : null,
+      drawer: isMobile ? Drawer(child: DashboardSidebar(expanded: true, selectedFeature: selectedFeature, onFeatureSelect: _onSelectFeature)) : null,
       body: Row(
         children: [
-          // Desktop sidebar
+          // Desktop Sidebar
           if (!isMobile)
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: isSidebarExpanded ? 220 : 60,
-              // color: isDark ? theme.colorScheme.primaryContainer : theme.colorScheme.secondaryContainer,
               color: theme.colorScheme.surface,
-              child: _buildSidebar(expanded: isSidebarExpanded),
+              child: DashboardSidebar(
+                expanded: isSidebarExpanded,
+                selectedFeature: selectedFeature,
+                onFeatureSelect: _onSelectFeature,
+              ),
             ),
 
-          // Main content
+          // Main Area
           Expanded(
             child: Column(
               children: [
-                // Top bar
-                Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  color: theme.colorScheme.surface,
-                  child: Row(
-                    children: [
-                      // Mobile: menu button
-                      if (isMobile)
-                        IconButton(
-                          icon: const Icon(Icons.menu),
-                          onPressed: () =>
-                              _scaffoldKey.currentState?.openDrawer(),
-                        ),
-
-                      // Desktop: toggle button
-                      if (!isMobile)
-                        IconButton(
-                          icon: Icon(
-                            isSidebarExpanded
-                                ? Icons.arrow_back_ios
-                                : Icons.arrow_forward_ios,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isSidebarExpanded = !isSidebarExpanded;
-                            });
-                          },
-                        ),
-
-                      const Spacer(),
-
-                      IconButton(
-                        icon: Icon(
-                          theme.brightness == Brightness.dark
-                              ? Icons.light_mode
-                              : Icons.dark_mode,
-                        ),
-                        onPressed: () => Get.find<ThemeService>().toggleTheme(),
-                      ),
-
-                      // const Spacer(),
-
-                      // Profile dropdown
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: selectedProfileOption,
-                          items: profileOptions
-                              .map((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            if (value == null) return;
-                            setState(() => selectedProfileOption = value);
-                            if (value == 'Logout') {
-                              authService.logout();
-                              // Navigate to login if needed
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                DashboardTopBar(
+                  isMobile: isMobile,
+                  isSidebarExpanded: isSidebarExpanded,
+                  selectedProfileOption: selectedProfileOption,
+                  onToggleSidebar: () {
+                    setState(() => isSidebarExpanded = !isSidebarExpanded);
+                  },
+                  onSelectProfileOption: _onSelectProfileOption,
+                  scaffoldKey: _scaffoldKey,
                 ),
 
-                // Main content area
                 Expanded(
-                  child: Container(
-                    color: theme.colorScheme.surface,
-                    child: Center(
-                      child: Text(
-                        'Welcome, ${authService.currentUser.value?.username ?? ''}',
-                        style: theme.textTheme.headlineSmall,
-                      ),
-                    ),
-                  ),
+                  child: DashboardContent(selectedFeature: selectedFeature),
                 ),
               ],
             ),
@@ -131,58 +72,15 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  Widget _buildSidebar({required bool expanded}) {
-    final theme = Theme.of(context);
+  void _onSelectFeature(String featureName) {
+    setState(() => selectedFeature = featureName);
+    if (isMobile) Navigator.of(context).pop();
+  }
 
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        Expanded(
-          child: Obx(() {
-            final features = authService.features;
-            if (features.isEmpty) return const SizedBox();
-
-            return ListView.builder(
-              itemCount: features.length,
-              itemBuilder: (context, index) {
-                final feature = features[index];
-                final isActive = selectedFeature == feature.name;
-                final isDark = theme.brightness == Brightness.dark;
-
-                return ListTile(
-                  leading: Image.asset(
-                    isDark ? feature.darkIconPath : feature.lightIconPath,
-                    width: 22,
-                    height: 22,
-                    fit: BoxFit.contain,
-                  ),
-                  title: expanded
-                      ? Text(
-                          feature.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: theme.colorScheme.onSurface
-                          ),
-                        )
-                      : null,
-                  selected: isActive,
-                  onTap: () {
-                    setState(() {
-                      selectedFeature = feature.name;
-                    });
-                    // Close drawer on mobile
-                    if (isMobile) Navigator.of(context).pop();
-                  },
-                  horizontalTitleGap: 10,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: expanded ? 16 : 8,
-                  ),
-                );
-              },
-            );
-          }),
-        ),
-      ],
-    );
+  void _onSelectProfileOption(String value) {
+    setState(() => selectedProfileOption = value);
+    if (value == 'Logout') {
+      authService.logout();
+    }
   }
 }

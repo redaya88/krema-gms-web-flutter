@@ -102,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
             child: Container(
               width: 380,
               padding: const EdgeInsets.all(20),
-              child: const PrettyLoginForm(),
+              child: PrettyLoginForm(),
             ),
           ),
         ),
@@ -147,7 +147,7 @@ class _LoginViewState extends State<LoginView> {
               child: Container(
                 width: 380,
                 padding: const EdgeInsets.all(20),
-                child: const PrettyLoginForm(),
+                child: PrettyLoginForm(),
               ),
             ),
           ),
