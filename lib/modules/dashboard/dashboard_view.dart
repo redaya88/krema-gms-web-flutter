@@ -21,27 +21,22 @@ class _DashboardViewState extends State<DashboardView> {
   String? selectedFeature;
 
   final authService = Get.find<AuthService>();
-  final List<String> profileOptions = ['Profile', 'Settings', 'Logout'];
 
   bool get isMobile => MediaQuery.of(context).size.width < 800;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       key: _scaffoldKey,
 
-      // ---------- MOBILE SIDEBAR (DRAWER) ----------
+      // ---------- MOBILE SIDEBAR ----------
       drawer: isMobile
           ? Drawer(
-              child: SizedBox(
-                width: 260, // IMPORTANT – prevents ListTile crash
-                child: DashboardSidebar(
-                  expanded: true,
-                  selectedFeature: selectedFeature,
-                  onFeatureSelect: _onSelectFeature,
-                ),
+              child: DashboardSidebar(
+                expanded: true,
+                selectedFeature: selectedFeature,
+                onFeatureSelect: (f) => setState(() => selectedFeature = f),
+                onToggleExpand: () {},
               ),
             )
           : null,
@@ -50,18 +45,15 @@ class _DashboardViewState extends State<DashboardView> {
         children: [
           // ---------- DESKTOP SIDEBAR ----------
           if (!isMobile)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: isSidebarExpanded ? 220 : 60,
-              color: theme.colorScheme.surface,
-              child: DashboardSidebar(
-                expanded: isSidebarExpanded,
-                selectedFeature: selectedFeature,
-                onFeatureSelect: _onSelectFeature,
-              ),
+            DashboardSidebar(
+              expanded: isSidebarExpanded,
+              selectedFeature: selectedFeature,
+              onFeatureSelect: (f) => setState(() => selectedFeature = f),
+              onToggleExpand: () =>
+                  setState(() => isSidebarExpanded = !isSidebarExpanded),
             ),
 
-          // ---------- MAIN PAGE ----------
+          // ---------- MAIN CONTENT ----------
           Expanded(
             child: Column(
               children: [
@@ -70,12 +62,10 @@ class _DashboardViewState extends State<DashboardView> {
                   isSidebarExpanded: isSidebarExpanded,
                   selectedProfileOption: selectedProfileOption,
                   scaffoldKey: _scaffoldKey,
-                  onToggleSidebar: () {
-                    setState(() => isSidebarExpanded = !isSidebarExpanded);
-                  },
+                  onToggleSidebar: () =>
+                      setState(() => isSidebarExpanded = !isSidebarExpanded),
                   onSelectProfileOption: _onSelectProfileOption,
                 ),
-
                 Expanded(
                   child: DashboardContent(
                     selectedFeature: selectedFeature,
@@ -89,18 +79,8 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  // ---------- FEATURE SELECTION ----------
-  void _onSelectFeature(String featureName) {
-    setState(() => selectedFeature = featureName);
-    if (isMobile) Navigator.pop(context); // close mobile drawer
-  }
-
-  // ---------- PROFILE MENU ----------
   void _onSelectProfileOption(String value) {
     setState(() => selectedProfileOption = value);
-
-    if (value == 'Logout') {
-      authService.logout();
-    }
+    if (value == 'Logout') authService.logout();
   }
 }

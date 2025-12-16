@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../core/services/theme_service.dart';
+
+import '../../core/widgets/web_profile_menu.dart';
 
 class DashboardTopBar extends StatelessWidget {
   final bool isMobile;
@@ -30,47 +30,40 @@ class DashboardTopBar extends StatelessWidget {
       color: theme.colorScheme.surface,
       child: Row(
         children: [
-          if (isMobile)
-            IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => scaffoldKey.currentState?.openDrawer(),
-            ),
-
-          if (!isMobile)
-            IconButton(
-              icon: Icon(
-                isSidebarExpanded
-                    ? Icons.arrow_back_ios
-                    : Icons.arrow_forward_ios,
-              ),
-              onPressed: onToggleSidebar,
-            ),
-
+          // if (isMobile)
+          //   IconButton(
+          //     icon: const Icon(Icons.menu),
+          //     onPressed: () => scaffoldKey.currentState?.openDrawer(),
+          //   ),
+          // if (!isMobile)
+          //   IconButton(
+          //     icon: Icon(
+          //       isSidebarExpanded
+          //           ? Icons.arrow_back_ios
+          //           : Icons.arrow_forward_ios,
+          //     ),
+          //     onPressed: onToggleSidebar,
+          //   ),
           const Spacer(),
-
-          IconButton(
-            icon: Icon(
-              theme.brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () => Get.find<ThemeService>().toggleTheme(),
+          WebProfileMenu(
+            username: "Cahya Nugraha",
+            role: "Administrator",
+            onSelect: (value) => onSelectProfileOption(value),
           ),
-
-          DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedProfileOption,
-              items: ['Profile', 'Settings', 'Logout']
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) onSelectProfileOption(value);
-              },
-            ),
-          ),
+          // DropdownButtonHideUnderline(
+          //   child: DropdownButton<String>(
+          //     value: selectedProfileOption,
+          //     items: ['Profile', 'Settings', 'Logout']
+          //         .map((e) => DropdownMenuItem(
+          //               value: e,
+          //               child: Text(e),
+          //             ))
+          //         .toList(),
+          //     onChanged: (value) {
+          //       if (value != null) onSelectProfileOption(value);
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );

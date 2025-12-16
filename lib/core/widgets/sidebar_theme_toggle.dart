@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/services/theme_service.dart';
-import 'package:krema_gms_web/core/widgets/theme_segmented_toggle.dart';
+import 'theme_segmented_toggle.dart';
 
 class SidebarThemeToggle extends StatelessWidget {
   final bool expanded;
