@@ -143,9 +143,9 @@ class PrettyLoginForm extends StatelessWidget {
               onPressed:
                   controller.isLoading.value ? null : () => controller.login(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
+                backgroundColor: theme.colorScheme.secondary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
               child: controller.isLoading.value
@@ -160,7 +160,7 @@ class PrettyLoginForm extends StatelessWidget {
                   : Text(
                       "Sign In",
                       style: theme.textTheme.labelLarge?.copyWith(
-                        // color: theme.colorScheme.onPrimary,
+                        color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -213,7 +213,13 @@ class PrettyLoginForm extends StatelessWidget {
             height: 48,
             child: ElevatedButton(
               onPressed: () {},
-              style: theme.elevatedButtonTheme.style,
+              // style: theme.elevatedButtonTheme.style,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.secondary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -223,9 +229,7 @@ class PrettyLoginForm extends StatelessWidget {
                       vertical: 10,
                     ),
                     child: Image.asset(
-                      isDark
-                          ? 'assets/icons/google-dark.png'
-                          : 'assets/icons/google-light.png',
+                      'assets/icons/google-dark.png',
                       width: 24,
                       height: 24,
                       fit: BoxFit.contain,
@@ -235,7 +239,7 @@ class PrettyLoginForm extends StatelessWidget {
                   Text(
                     "Sign In with Google",
                     style: theme.textTheme.labelLarge?.copyWith(
-                      // color: theme.colorScheme.onPrimary,
+                      color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
