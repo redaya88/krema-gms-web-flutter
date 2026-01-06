@@ -7,7 +7,10 @@ class SidebarThemeToggle extends StatelessWidget {
   final bool expanded;
   final themeService = Get.find<ThemeService>();
 
-  SidebarThemeToggle({super.key, required this.expanded});
+  SidebarThemeToggle({
+    super.key,
+    required this.expanded,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,32 +20,52 @@ class SidebarThemeToggle extends StatelessWidget {
       final isDark = themeService.isDarkMode.value;
 
       return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 250),
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
         transitionBuilder: (child, animation) {
           return FadeTransition(
             opacity: animation,
-            child: SizeTransition(
-              sizeFactor: animation,
-              axis: Axis.horizontal,
-              child: child,
-            ),
+            child: child,
           );
         },
         child: expanded
+            // ───────────── EXPANDED ─────────────
             ? ThemeSegmentedToggle(
-                key: const ValueKey('full_toggle'),
+                key: const ValueKey('expanded'),
                 isDark: isDark,
                 onChanged: (value) {
-                  if (value != isDark) themeService.toggleTheme();
+                  if (value != isDark) {
+                    themeService.toggleTheme();
+                  }
                 },
+                expanded: expanded,
               )
-            : GestureDetector(
-                key: const ValueKey('icon_only'),
-                onTap: () => themeService.toggleTheme(),
-                child: Icon(
-                  isDark ? Icons.nightlight_round : Icons.wb_sunny_outlined,
-                  size: 24,
-                  color: theme.colorScheme.onSurface,
+
+            // ───────────── COLLAPSED ─────────────
+            : Tooltip(
+                key: const ValueKey('collapsed'),
+                message: isDark ? 'Dark mode' : 'Light mode',
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () => themeService.toggleTheme(),
+                      child: Center(
+                        child: Icon(
+                          isDark
+                              ? Icons.nightlight_round
+                              : Icons.wb_sunny_outlined,
+                          size: 22,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
       );
