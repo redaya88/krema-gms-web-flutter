@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sidebar_icon.dart';
 
 class SidebarItem extends StatelessWidget {
   final bool expanded;
@@ -20,55 +21,36 @@ class SidebarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Material(
-        color: active
-            ? theme.colorScheme.primary.withOpacity(0.12)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: active
+              ? theme.colorScheme.primary.withOpacity(0.12)
+              : null,
           borderRadius: BorderRadius.circular(8),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            padding: EdgeInsets.symmetric(
-              horizontal: expanded ? 12 : 0,
-              vertical: 10,
-            ),
-            child: expanded
-                ? Row(
-                    children: [
-                      _buildIcon(),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight:
-                                active ? FontWeight.w600 : FontWeight.w400,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Center(child: _buildIcon()),
-          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildIcon() {
-    return SizedBox(
-      width: 24,
-      height: 24,
-      child: Image.asset(
-        iconPath,
-        fit: BoxFit.contain,
+        child: Row(
+          children: [
+            SidebarIcon(iconPath: iconPath),
+            if (expanded) ...[
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight:
+                        active ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

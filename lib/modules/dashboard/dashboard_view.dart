@@ -45,12 +45,15 @@ class _DashboardViewState extends State<DashboardView> {
         children: [
           // ---------- DESKTOP SIDEBAR ----------
           if (!isMobile)
-            DashboardSidebar(
-              expanded: isSidebarExpanded,
-              selectedFeature: selectedFeature,
-              onFeatureSelect: (f) => setState(() => selectedFeature = f),
-              onToggleExpand: () =>
-                  setState(() => isSidebarExpanded = !isSidebarExpanded),
+            SizedBox(
+              width: isSidebarExpanded ? 260 : 78,
+              child: DashboardSidebar(
+                expanded: isSidebarExpanded,
+                selectedFeature: selectedFeature,
+                onFeatureSelect: (f) => setState(() => selectedFeature = f),
+                onToggleExpand: () =>
+                    setState(() => isSidebarExpanded = !isSidebarExpanded),
+              ),
             ),
 
           // ---------- MAIN CONTENT ----------
