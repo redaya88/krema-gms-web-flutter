@@ -31,4 +31,16 @@ class FeatureModel {
       banned: json['banned'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'parent': parent,
+      'feature_index': featureIndex,
+      'name': name,
+      'description': description,
+      'banned': banned ? 1 : 0,
+      'light_icon_path': lightIconPath,
+      'dark_icon_path': darkIconPath,
+    };
+  }
 }

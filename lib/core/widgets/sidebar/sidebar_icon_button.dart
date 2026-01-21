@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SidebarIconButton extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final VoidCallback? onTap;
 
   const SidebarIconButton({
@@ -22,7 +22,8 @@ class SidebarIconButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Center(
-            child: Icon(icon, size: 22),
+            child: Image.asset("assets/icons/menu/menu-bar-collapse-light.png",
+                width: 24, height: 24, fit: BoxFit.contain),
           ),
         ),
       ),

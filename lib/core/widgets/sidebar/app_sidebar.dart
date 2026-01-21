@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:krema_gms_web/core/services/auth_service.dart';
 import 'package:krema_gms_web/core/widgets/sidebar/sidebar_header.dart';
 import 'package:krema_gms_web/core/widgets/sidebar/sidebar_item.dart';
 import 'package:krema_gms_web/core/widgets/sidebar_theme_toggle.dart';
 
 class SidebarMenu {
-  final IconData icon;
+  final String icon;
   final String title;
 
   const SidebarMenu({
@@ -27,20 +29,15 @@ class AppSidebar extends StatelessWidget {
     required this.onMenuSelected,
   });
 
-  // ✅ DEFINE MENUS HERE
-  static const List<SidebarMenu> menus = [
-    SidebarMenu(icon: Icons.dashboard, title: 'Dashboard'),
-    SidebarMenu(icon: Icons.people, title: 'Users'),
-    SidebarMenu(icon: Icons.settings, title: 'Settings'),
-    SidebarMenu(icon: Icons.logout, title: 'Logout'),
-  ];
 
   static const double expandedWidth = 260;
   static const double collapsedWidth = 72;
 
   @override
   Widget build(BuildContext context) {
+    final auth = Get.find<AuthService>();
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -71,13 +68,13 @@ class AppSidebar extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: menus.length,
+              itemCount: auth.features.length,
               itemBuilder: (context, index) {
-                final menu = menus[index];
+                final f = auth.features[index];
                 return SidebarItem(
                   expanded: expanded,
-                  icon: menu.icon,
-                  title: menu.title,
+                  icon: isDark ? f.darkIconPath : f.lightIconPath,
+                  title: f.name,
                   active: index == selectedIndex,
                   onTap: () => onMenuSelected(index),
                 );

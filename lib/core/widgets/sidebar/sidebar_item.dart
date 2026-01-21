@@ -5,7 +5,7 @@ const double kSidebarHorizontalPadding = 12;
 
 class SidebarItem extends StatelessWidget {
   final bool expanded;
-  final IconData icon;
+  final String icon;
   final String title;
   final bool active;
   final VoidCallback onTap;
@@ -37,7 +37,13 @@ class SidebarItem extends StatelessWidget {
             children: [
               SizedBox(
                 width: kSidebarIconWidth,
-                child: Icon(icon, size: 22),
+                // child: Icon(icon, size: 22),
+                child: Image.asset(
+                  icon,
+                  width: 22,
+                  height: 22,
+                  fit: BoxFit.contain,
+                ),
               ),
               Expanded(
                 child: AnimatedOpacity(
@@ -49,8 +55,7 @@ class SidebarItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight:
-                          active ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: active ? FontWeight.w600 : FontWeight.w400,
                     ),
                   ),
                 ),
